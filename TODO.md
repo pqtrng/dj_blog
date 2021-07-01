@@ -2,14 +2,15 @@
 
 - [x] Create a model to save comments
 
-- [ ] Create a form to:
-  - [ ] Submit comment
-  - [ ] Validate input data
+- [x] Create a form to:
+  - [x] Submit comment
+  - [x] Validate input data
 
-- [ ] Add a view to:
-  - [ ] Process the form
-  - [ ] Save a new comment to the database
+- [x] Add a view to:
+  - [x] Process the form
+  - [x] Save a new comment to the database
 
-- [ ] Edit post detail template
-  - [ ] Display the list of comments
-  - [ ] Form to add new comment
+- [x] Edit post detail template
+  - [x] Display the total number of comments
+  - [x] Display the list of comments
+  - [x] Form to add new comment
