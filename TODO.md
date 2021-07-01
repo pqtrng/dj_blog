@@ -1,6 +1,6 @@
 # Todo list
 
-- [ ] Create a model to save comments
+- [x] Create a model to save comments
 
 - [ ] Create a form to:
   - [ ] Submit comment
