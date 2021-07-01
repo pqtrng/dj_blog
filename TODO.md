@@ -1,15 +1,15 @@
 # Todo list
 
-- [x] Create a form for users to fill in:
-  - [x]  Their name
-  - [x]  Their email
-  - [x]  The email recipient
-  - [x]  Optional comments.
+- [ ] Create a model to save comments
 
-- [x] Create view handles
-  - [x] The posted data
-  - [x] Send emails
+- [ ] Create a form to:
+  - [ ] Submit comment
+  - [ ] Validate input data
 
-- [x] Add an URL pattern for new view.
+- [ ] Add a view to:
+  - [ ] Process the form
+  - [ ] Save a new comment to the database
 
-- [x] Create a template to display the form.
+- [ ] Edit post detail template
+  - [ ] Display the list of comments
+  - [ ] Form to add new comment
