@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from .models import Post, Comment
 from .forms import EmailPostForm, CommentForm
 from django.views.generic import ListView
+from taggit.models import Tag
 
 
 class PostListView(ListView):
@@ -14,9 +15,17 @@ class PostListView(ListView):
     template_name = 'blog/post/list.html'
 
 
-def post_list(request):
+def post_list(request, tag_slug=None):
     # Get all posts with the published status using published manager is created.
     object_list = Post.published.all()
+
+    tag = None
+    if tag_slug:
+        # get Tag object with the given slug
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        # filter list of posts with this given tag
+        object_list = object_list.filter(tags__in=[tag])
+
     # Instantiate with the number of objects to display
     paginator = Paginator(object_list, 3)  # posts in each page
 
@@ -37,7 +46,8 @@ def post_list(request):
         template_name='blog/post/list.html',
         context={
             'page': page,
-            'posts': posts
+            'posts': posts,
+            'tag': tag
         }
     )
 

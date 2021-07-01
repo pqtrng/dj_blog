@@ -2,8 +2,9 @@
 
 A blog application where users can create and share posts. Web application is built with:
 
-- SQLite Database
+- SQLite
 - Django
+- Django-taggit
 
 ## Features
 

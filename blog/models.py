@@ -4,6 +4,8 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.utils.translation import activate
 
+from taggit.managers import TaggableManager
+
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -58,6 +60,7 @@ class Post(models.Model):
 
     objects = models.Manager()  # The default manager
     published = PublishedManager()  # Custom manager
+    tags = TaggableManager()
 
 
 class Comment(models.Model):
