@@ -1,6 +1,7 @@
 from typing import List
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.mail import send_mail
 from .models import Post
 from .forms import EmailPostForm
 from django.views.generic import ListView
@@ -59,6 +60,8 @@ def post_share(request, post_id):
         status='published'
     )
 
+    sent = False
+
     # Use same view for both displaying the initial form and processing the submitted data
 
     if request.method == 'POST':
@@ -68,7 +71,17 @@ def post_share(request, post_id):
         if form.is_valid():
             # Form fields passed validation
             cd = form.cleaned_data
-            # ... send email
+
+            post_url = request.build_absolute_uri(post.get_absolute_url())
+            subject = f"{cd['name']} recommends you read {post.title}"
+            message = f"Read {post.title} at {post_url}\n\n{cd['name']}'s comments: {cd['comments']}"
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email='admin&email.com',
+                recipient_list=[cd['to']]
+            )
+            sent = True
     else:
         # Empty form is requested
         form = EmailPostForm()
@@ -77,5 +90,6 @@ def post_share(request, post_id):
         template_name='blog/post/share.html',
         context={
             'post': post,
-            'form': form
+            'form': form,
+            'sent': sent
         })
