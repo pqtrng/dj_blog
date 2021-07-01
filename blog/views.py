@@ -2,6 +2,7 @@ from typing import List
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post
+from .forms import EmailPostForm
 from django.views.generic import ListView
 
 
@@ -48,3 +49,33 @@ def post_detail(request, year, month, day, post):
                              publish__month=month,
                              publish__day=day)
     return render(request=request, template_name='blog/post/detail.html', context={'post': post})
+
+
+def post_share(request, post_id):
+    # Retrieve post by id, make sure it is published
+    post = get_object_or_404(
+        Post,
+        id=post_id,
+        status='published'
+    )
+
+    # Use same view for both displaying the initial form and processing the submitted data
+
+    if request.method == 'POST':
+        # Form was submitted, create a from with data is contained in request.POST
+        form = EmailPostForm(request.POST)
+        # Validate the submitted data, True if all fields contain valid data
+        if form.is_valid():
+            # Form fields passed validation
+            cd = form.cleaned_data
+            # ... send email
+    else:
+        # Empty form is requested
+        form = EmailPostForm()
+    return render(
+        request=request,
+        template_name='blog/post/share.html',
+        context={
+            'post': post,
+            'form': form
+        })
