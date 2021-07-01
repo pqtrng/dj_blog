@@ -10,6 +10,6 @@
   - [x] The posted data
   - [x] Send emails
 
-- [ ] Add an URL pattern for new view.
+- [x] Add an URL pattern for new view.
 
-- [ ] Create a template to display the form.
+- [x] Create a template to display the form.
