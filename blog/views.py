@@ -1,10 +1,11 @@
-from typing import List
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import send_mail
 from .models import Post, Comment
 from .forms import EmailPostForm, CommentForm
 from django.views.generic import ListView
+from taggit.models import Tag
+from django.db.models import Count
 
 
 class PostListView(ListView):
@@ -14,9 +15,17 @@ class PostListView(ListView):
     template_name = 'blog/post/list.html'
 
 
-def post_list(request):
+def post_list(request, tag_slug=None):
     # Get all posts with the published status using published manager is created.
     object_list = Post.published.all()
+
+    tag = None
+    if tag_slug:
+        # get Tag object with the given slug
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        # filter list of posts with this given tag
+        object_list = object_list.filter(tags__in=[tag])
+
     # Instantiate with the number of objects to display
     paginator = Paginator(object_list, 3)  # posts in each page
 
@@ -37,7 +46,8 @@ def post_list(request):
         template_name='blog/post/list.html',
         context={
             'page': page,
-            'posts': posts
+            'posts': posts,
+            'tag': tag
         }
     )
 
@@ -68,6 +78,14 @@ def post_detail(request, year, month, day, post):
     else:
         comment_form = CommentForm()
 
+    # Retrieve a python list of IDs for tags of the current post.
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    similar_posts = Post.published.filter(
+        tags__in=post_tags_ids).exclude(id=post.id)  # exclude the current post
+
+    similar_posts = similar_posts.annotate(same_tags=Count(
+        'tags')).order_by('-same_tags', '-publish')[:4]
+
     return render(
         request=request,
         template_name='blog/post/detail.html',
@@ -75,7 +93,8 @@ def post_detail(request, year, month, day, post):
             'post': post,
             'comments': comments,
             'new_comment': new_comment,
-            'comment_form': comment_form
+            'comment_form': comment_form,
+            'similar_posts': similar_posts,
         }
     )
 
