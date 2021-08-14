@@ -1,3 +1,4 @@
+bcrypt
 django-taggit
 markdown
 psycopg2-binary
